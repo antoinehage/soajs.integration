@@ -7,10 +7,7 @@
   "description": "OTF Service API",
 
   "tags": ["test", "otf", "automation"],
-  "attributes": {
-    "att1": ["att1.1", "att1.2"],
-    "att2": ["att2.1", "att2.2"]
-  },
+
   "program": ["SD-WAN"],
 
   "swaggerFilename": "swagger.yml",
