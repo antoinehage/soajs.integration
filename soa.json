@@ -13,7 +13,7 @@
   },
   "program": ["SD-WAN"],
 
-  "swaggerFilename": "swagger.yml",
+  "swaggerFilename": "swagger.json",
 
   "maintenance": {
     "port": {
