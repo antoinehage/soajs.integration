@@ -1,17 +1,17 @@
 {
-  "serviceName": "otfsvcapi",
-  "serviceGroup": "ECOMP",
-  "servicePort": 4100,
+  "serviceName": "phone",
+  "serviceGroup": "demo",
+  "servicePort": 4900,
   "serviceVersion": "1",
 
-  "description": "OTF Service API",
+  "description": "To check the phone number with license",
 
-  "tags": ["test", "otf", "automation"],
+  "tags": ["phone", "phonenumber", "checknumber"],
   "attributes": {
     "att1": ["att1.1", "att1.2"],
     "att2": ["att2.1", "att2.2"]
   },
-  "program": ["SD-WAN"],
+  "program": ["Demo"],
 
   "swaggerFilename": "swagger.yml",
 
