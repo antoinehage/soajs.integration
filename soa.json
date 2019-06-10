@@ -34,8 +34,8 @@
 
   "extKeyRequired": true,
   "oauth": true,
-  "urac": true,
-  "urac_Profile": true,
+  "urac": false,
+  "urac_Profile": false,
   "urac_ACL": false,
   "provision_ACL": false
 }
