@@ -291,7 +291,6 @@
       "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
     },
     "AddressDTO": {
-      "description": "AddressDTO represents address entity",
       "$ref": "#/definitions/Address"
     },
     "AdvanceNotice": {
@@ -833,7 +832,6 @@
       "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
     },
     "Image": {
-      "title": "Image represents image structure.",
       "$ref": "#/definitions/Image"
     },
     "ImageDTO": {
