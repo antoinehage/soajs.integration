@@ -1,0 +1,2153 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "The purpose of this application is to manage calculation for wages.\n\nSwagger json genereated using https://goswagger.io/generate/spec.html\nswagger -q generate spec -m -o swagger.json",
+    "title": "Rockspoon HR Wages-Calculator Microservice",
+    "version": "0.0.1"
+  },
+  "host": "localhost:6002",
+  "basePath": "/",
+  "paths": {
+    "/wages-calculator/wage": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Wages"
+        ],
+        "summary": "Returns salary report.",
+        "operationId": "getSalaryReportForAyDates",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "access token",
+            "name": "access_token",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "key",
+            "name": "key",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "start date",
+            "name": "startDate",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "end date",
+            "name": "endDate",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SalaryReport response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SalaryReportResponse"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/wages-calculator/wage/pay-cycle": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Wages"
+        ],
+        "summary": "Returns salary report.",
+        "operationId": "getSalaryReport",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "access token",
+            "name": "access_token",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "key",
+            "name": "key",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "start date",
+            "name": "startDate",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "end date",
+            "name": "endDate",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SalaryReport response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SalaryReportResponse"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/wages-calculator/wage/recalculate": {
+      "post": {
+        "description": "Recalculates wages for date range",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Wages"
+        ],
+        "operationId": "recalculateWages",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "key",
+            "name": "key",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "recalculateWagesRequest",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SalaryRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "recalculateWages response"
+          }
+        }
+      }
+    },
+    "/wages-calculator/wage/user": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Wages"
+        ],
+        "summary": "Returns salary report for each user.",
+        "operationId": "getSalaryReportPerUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "access token",
+            "name": "access_token",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "key",
+            "name": "key",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "salaryReportPerUser",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/SalaryRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SalaryReport response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SalaryPerUserResponse"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Address": {
+      "description": "Address represents address entity",
+      "type": "object",
+      "properties": {
+        "address1": {
+          "type": "string",
+          "x-go-name": "Address1"
+        },
+        "address2": {
+          "type": "string",
+          "x-go-name": "Address2"
+        },
+        "city": {
+          "type": "string",
+          "x-go-name": "City"
+        },
+        "country": {
+          "type": "string",
+          "x-go-name": "Country"
+        },
+        "id": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "instructions": {
+          "type": "string",
+          "x-go-name": "Instructions"
+        },
+        "isDefault": {
+          "type": "boolean",
+          "x-go-name": "IsDefault"
+        },
+        "isValidated": {
+          "type": "boolean",
+          "x-go-name": "IsValidated"
+        },
+        "latitude": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Latitude"
+        },
+        "longitude": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Longitude"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "region": {
+          "type": "string",
+          "x-go-name": "Region"
+        },
+        "state": {
+          "type": "string",
+          "x-go-name": "State"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        },
+        "timezone": {
+          "type": "string",
+          "x-go-name": "Timezone"
+        },
+        "zipcode": {
+          "type": "string",
+          "x-go-name": "ZipCode"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "AddressDTO": {
+      "description": "AddressDTO represents address entity",
+      "$ref": "#/definitions/Address"
+    },
+    "AdvanceNotice": {
+      "description": "AdvanceNotice represents advance notice model",
+      "type": "object",
+      "properties": {
+        "unit": {
+          "$ref": "#/definitions/AdvanceNoticeUnit"
+        },
+        "value": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Value"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "AdvanceNoticeUnit": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "Amenities": {
+      "description": "Amenities represents amenities model",
+      "type": "object",
+      "properties": {
+        "parking": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VenueParking"
+          },
+          "x-go-name": "Parking"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "AmenitiesDTO": {
+      "description": "AmenitiesDTO represents DTO of amenities model",
+      "type": "object",
+      "properties": {
+        "parking": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VenueParkingDTO"
+          },
+          "x-go-name": "Parking"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "AnnualClosures": {
+      "description": "AnnualClosures represents annual closures model",
+      "type": "object",
+      "properties": {
+        "closedAllDay": {
+          "type": "boolean",
+          "x-go-name": "ClosedAllDay"
+        },
+        "date": {
+          "type": "string",
+          "x-go-name": "Date"
+        },
+        "holidayId": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "modifiedOpeningHours": {
+          "$ref": "#/definitions/Period"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "type": {
+          "$ref": "#/definitions/HolidayType"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "AnnualClosuresDTO": {
+      "description": "AnnualClosuresDTO represents DTO of annual closures model",
+      "type": "object",
+      "properties": {
+        "closedAllDay": {
+          "type": "boolean",
+          "x-go-name": "ClosedAllDay"
+        },
+        "date": {
+          "type": "string",
+          "x-go-name": "Date"
+        },
+        "holidayId": {
+          "type": "string",
+          "x-go-name": "HolidayID"
+        },
+        "modifiedOpeningHours": {
+          "$ref": "#/definitions/Period"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "type": {
+          "$ref": "#/definitions/HolidayType"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "AvailableSalesOption": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "BankingInformation": {
+      "description": "BankingInformation represents banking information model",
+      "type": "object",
+      "properties": {
+        "accountNumber": {
+          "type": "string",
+          "x-go-name": "AccountNumber"
+        },
+        "accountType": {
+          "type": "string",
+          "x-go-name": "AccountType"
+        },
+        "bankName": {
+          "type": "string",
+          "x-go-name": "BankName"
+        },
+        "routingNumber": {
+          "type": "string",
+          "x-go-name": "RoutingNumber"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "Brand": {
+      "description": "Brand represents brand model",
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "x-go-name": "Description"
+        },
+        "logo": {
+          "$ref": "#/definitions/Image"
+        },
+        "media": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Media"
+          },
+          "x-go-name": "Media"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "BrandDTO": {
+      "description": "BrandDTO represents DTO of brand model",
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "x-go-name": "Description"
+        },
+        "logo": {
+          "$ref": "#/definitions/ImageDTO"
+        },
+        "media": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Media"
+          },
+          "x-go-name": "Media"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "CateringServices": {
+      "description": "CateringServices represents catering services model",
+      "type": "object",
+      "properties": {
+        "advanceNotice": {
+          "$ref": "#/definitions/AdvanceNotice"
+        },
+        "fee": {
+          "$ref": "#/definitions/Fee"
+        },
+        "orderMinimumAmount": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "OrderMinimumAmount"
+        },
+        "range": {
+          "$ref": "#/definitions/ServiceRange"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "DailyReport": {
+      "description": "DailyReport represents daily hours and salary report for user",
+      "type": "object",
+      "properties": {
+        "DailyOvertime": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "Date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "RegularHours": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "RegularTotal": {
+          "$ref": "#/definitions/Total"
+        },
+        "UserID": {
+          "type": "string"
+        },
+        "VenueID": {
+          "type": "string"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "DatesRangeIntegrationRequest": {
+      "description": "DatesRangeIntegrationRequest represents a struct for requests to integration functions",
+      "type": "object",
+      "properties": {
+        "AccessToken": {
+          "type": "string"
+        },
+        "Email": {
+          "type": "string"
+        },
+        "EndDate": {
+          "type": "string"
+        },
+        "StartDate": {
+          "type": "string"
+        },
+        "URL": {
+          "type": "string"
+        },
+        "VenueKey": {
+          "type": "string"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "DeliveryServices": {
+      "description": "DeliveryServices represents delivery services model",
+      "type": "object",
+      "properties": {
+        "fee": {
+          "$ref": "#/definitions/Fee"
+        },
+        "maximumDeliveryTimeInMinutes": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "MaximumDeliveryTimeInMinutes"
+        },
+        "minimumDeliveryTimeInMinutes": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "MinimumDeliveryTimeInMinutes"
+        },
+        "orderMinimumAmount": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "OrderMinimumAmount"
+        },
+        "range": {
+          "$ref": "#/definitions/ServiceRange"
+        },
+        "thirdParties": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeliveryThirdParty"
+          },
+          "x-go-name": "ThirdParties"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "DeliveryThirdParty": {
+      "description": "DeliveryThirdParty represents delivery thirdParty model",
+      "type": "object",
+      "properties": {
+        "cutoffTime": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "CutoffTime"
+        },
+        "fee": {
+          "type": "number",
+          "format": "float",
+          "x-go-name": "Fee"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "payCycle": {
+          "$ref": "#/definitions/DeliveryThirdPartyPayCycle"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "DeliveryThirdPartyPayCycle": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "DineInServices": {
+      "description": "DineInServices represents dine in services model",
+      "type": "object",
+      "properties": {
+        "salesTaxRate": {
+          "type": "number",
+          "format": "float",
+          "x-go-name": "SalesTaxRate"
+        },
+        "serviceCharge": {
+          "$ref": "#/definitions/ServiceCharge"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "EmploymentCondition": {
+      "description": "EmploymentCondition represents employment conditions in role",
+      "type": "object",
+      "properties": {
+        "annualSalary": {
+          "$ref": "#/definitions/Total"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "EndDate"
+        },
+        "hourlyRate": {
+          "$ref": "#/definitions/Total"
+        },
+        "isOvertimeExemption": {
+          "type": "boolean",
+          "x-go-name": "IsOvertimeExemption"
+        },
+        "payType": {
+          "type": "string",
+          "x-go-name": "PayType"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "StartDate"
+        },
+        "weeklyHours": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "WeeklyHours"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "EntityType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "Entry": {
+      "description": "Entry represents salary info per user per one entry",
+      "type": "object",
+      "properties": {
+        "breakHours": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "BreakHours"
+        },
+        "date": {
+          "type": "string",
+          "x-go-name": "Date"
+        },
+        "overtimeHours": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "OvertimeHours"
+        },
+        "regularHours": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "RegularHours"
+        },
+        "totalCardTips": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "TotalCardTips"
+        },
+        "totalCashTips": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "TotalCashTips"
+        },
+        "totalOvertime": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "TotalOvertime"
+        },
+        "totalPaidBreaks": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "TotalPaidBreaks"
+        },
+        "totalRegularHours": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "TotalRegularHours"
+        },
+        "totalSalary": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "TotalSalary"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "EntryType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "Fee": {
+      "description": "Fee represents fee model",
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/FeeType"
+        },
+        "value": {
+          "type": "number",
+          "format": "float",
+          "x-go-name": "Value"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "FeeType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "GalleryImage": {
+      "description": "GalleryImage represents gallery image",
+      "type": "object",
+      "properties": {
+        "image": {
+          "$ref": "#/definitions/Image"
+        },
+        "index": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Index"
+        },
+        "isDefault": {
+          "type": "boolean",
+          "x-go-name": "IsDefault"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "GalleryImageDTO": {
+      "description": "GalleryImageDTO represents dTO gallery image",
+      "type": "object",
+      "properties": {
+        "image": {
+          "$ref": "#/definitions/ImageDTO"
+        },
+        "index": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Index"
+        },
+        "isDefault": {
+          "type": "boolean",
+          "x-go-name": "IsDefault"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "GetSalaryReportRequest": {
+      "description": "GetSalaryReportRequest represents the request for getting salary report",
+      "type": "object",
+      "properties": {
+        "AccessToken": {
+          "type": "string"
+        },
+        "EndDate": {
+          "type": "string"
+        },
+        "EndTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "SettingsURL": {
+          "type": "string"
+        },
+        "StartDate": {
+          "type": "string"
+        },
+        "StartTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "TimeClockURL": {
+          "type": "string"
+        },
+        "TipsURL": {
+          "type": "string"
+        },
+        "UserProfileURL": {
+          "type": "string"
+        },
+        "VenueID": {
+          "type": "string"
+        },
+        "VenueKey": {
+          "type": "string"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "HolidayType": {
+      "description": "Possible values are: \"holiday\", \"custom_closure\"",
+      "type": "string",
+      "title": "HolidayType represents type of holiday inside of annualClosure",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "Image": {
+      "title": "Image represents image structure.",
+      "$ref": "#/definitions/Image"
+    },
+    "ImageDTO": {
+      "type": "object",
+      "title": "ImageDTO represents DTO of image structure.",
+      "properties": {
+        "contentType": {
+          "type": "string",
+          "x-go-name": "ContentType"
+        },
+        "id": {
+          "type": "string",
+          "x-go-name": "ID"
+        },
+        "resolutions": {
+          "$ref": "#/definitions/Resolutions"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "Media": {
+      "description": "Media represents media model",
+      "type": "object",
+      "properties": {
+        "media": {
+          "$ref": "#/definitions/MediaType"
+        },
+        "url": {
+          "type": "string",
+          "x-go-name": "URL"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "MediaType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "Method": {
+      "description": "Method represents a method of giving tips and its amount",
+      "type": "object",
+      "properties": {
+        "method": {
+          "$ref": "#/definitions/TipsType"
+        },
+        "total": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Amount"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "ObjectID": {
+      "type": "array",
+      "title": "ObjectID is the BSON ObjectID type.",
+      "items": {
+        "type": "integer",
+        "format": "uint8"
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/go.mongodb.org/mongo-driver/bson/primitive"
+    },
+    "OpeningHours": {
+      "description": "OpeningHours represents opening hours model",
+      "type": "object",
+      "properties": {
+        "daysOfWeek": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "DaysOfWeek"
+        },
+        "periods": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Period"
+          },
+          "x-go-name": "Periods"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "OperatingEntity": {
+      "description": "OperatingEntity represents operating entity model",
+      "type": "object",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/Address"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "phones": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Phone"
+          },
+          "x-go-name": "Phones"
+        },
+        "taxId": {
+          "type": "string",
+          "x-go-name": "TaxID"
+        },
+        "type": {
+          "$ref": "#/definitions/EntityType"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "OperatingEntityDTO": {
+      "description": "OperatingEntityDTO represents DTO of operating entity model",
+      "type": "object",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/Address"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "phones": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Phone"
+          },
+          "x-go-name": "Phones"
+        },
+        "taxId": {
+          "type": "string",
+          "x-go-name": "TaxID"
+        },
+        "type": {
+          "$ref": "#/definitions/EntityType"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "OvertimeType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "PaidHours": {
+      "type": "object",
+      "title": "PaidHours represents paid hours struct.",
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "Date"
+        },
+        "entryType": {
+          "$ref": "#/definitions/EntryType"
+        },
+        "id": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "seconds": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Seconds"
+        },
+        "timeClockID": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "total": {
+          "$ref": "#/definitions/Total"
+        },
+        "type": {
+          "$ref": "#/definitions/PaidHoursType"
+        },
+        "userID": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "venueID": {
+          "$ref": "#/definitions/ObjectID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "PaidHoursDTO": {
+      "type": "object",
+      "title": "PaidHoursDTO represents DTO of paid hours struct.",
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "Date"
+        },
+        "entryType": {
+          "$ref": "#/definitions/EntryType"
+        },
+        "id": {
+          "type": "string",
+          "x-go-name": "ID"
+        },
+        "seconds": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Seconds"
+        },
+        "timeClockID": {
+          "type": "string",
+          "x-go-name": "TimeClockID"
+        },
+        "total": {
+          "$ref": "#/definitions/Total"
+        },
+        "type": {
+          "$ref": "#/definitions/PaidHoursType"
+        },
+        "userID": {
+          "type": "string",
+          "x-go-name": "UserID"
+        },
+        "venueID": {
+          "type": "string",
+          "x-go-name": "VenueID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "PaidHoursType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "PayCycleType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "Period": {
+      "description": "Period represents period model",
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "x-go-name": "From"
+        },
+        "to": {
+          "type": "string",
+          "x-go-name": "To"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "Phone": {
+      "description": "Phone represents phone number struct",
+      "type": "object",
+      "properties": {
+        "countryCode": {
+          "type": "string",
+          "x-go-name": "CountryCode"
+        },
+        "isDefault": {
+          "type": "boolean",
+          "x-go-name": "IsDefault"
+        },
+        "isValidated": {
+          "type": "boolean",
+          "x-go-name": "IsValidated"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "x-go-name": "PhoneNumber"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        },
+        "type": {
+          "$ref": "#/definitions/PhoneType"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "PhoneDTO": {
+      "description": "PhoneDTO represents phone entity",
+      "$ref": "#/definitions/Phone"
+    },
+    "PhoneType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "Profile": {
+      "description": "Profile represents the profile of a user in salary response",
+      "type": "object",
+      "properties": {
+        "breakHours": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "BreakHours"
+        },
+        "email": {
+          "type": "string",
+          "x-go-name": "Email"
+        },
+        "fullName": {
+          "type": "string",
+          "x-go-name": "FullName"
+        },
+        "id": {
+          "type": "string",
+          "x-go-name": "ID"
+        },
+        "overtimeHours": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "OvertimeHours"
+        },
+        "regularHours": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "RegularHours"
+        },
+        "totalCardTips": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "TotalCardTips"
+        },
+        "totalCashTips": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "TotalCashTips"
+        },
+        "totalOvertime": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "TotalOvertime"
+        },
+        "totalPaidBreaks": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "TotalPaidBreaks"
+        },
+        "totalRegularHours": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "TotalRegularHours"
+        },
+        "totalSalary": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "TotalSalary"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "RangeType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "Resolution": {
+      "type": "object",
+      "title": "Resolution represents one specific resolution.",
+      "properties": {
+        "height": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Height"
+        },
+        "url": {
+          "type": "string",
+          "x-go-name": "URL"
+        },
+        "width": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Width"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.common-model/image"
+    },
+    "Resolutions": {
+      "type": "object",
+      "title": "Resolutions represents links with all resolutions for image.",
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/Resolution"
+        },
+        "high": {
+          "$ref": "#/definitions/Resolution"
+        },
+        "low": {
+          "$ref": "#/definitions/Resolution"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.common-model/image"
+    },
+    "ResourceType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "Role": {
+      "description": "Role represents the role in salary response",
+      "type": "object",
+      "properties": {
+        "employmentConditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EmploymentCondition"
+          },
+          "x-go-name": "EmploymentConditions"
+        },
+        "id": {
+          "type": "string",
+          "x-go-name": "ID"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "profiles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Profile"
+          },
+          "x-go-name": "Profiles"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "RoleCategory": {
+      "description": "RoleCategory represents the role category in salary response",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Role"
+          },
+          "x-go-name": "Roles"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "RoleInfo": {
+      "description": "RoleInfo represents role info in salary response",
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "x-go-name": "Category"
+        },
+        "employmentConditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EmploymentCondition"
+          },
+          "x-go-name": "EmploymentConditions"
+        },
+        "endDate": {
+          "type": "string",
+          "x-go-name": "EndDate"
+        },
+        "roleID": {
+          "type": "string",
+          "x-go-name": "ID"
+        },
+        "roleName": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "startDate": {
+          "type": "string",
+          "x-go-name": "StartDate"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "SalaryPerUserResponse": {
+      "description": "SalaryPerUserResponse represents salary info per user",
+      "type": "object",
+      "properties": {
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Entry"
+          },
+          "x-go-name": "Entries"
+        },
+        "userInfo": {
+          "$ref": "#/definitions/UserInfo"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "SalaryReportResponse": {
+      "description": "SalaryReportResponse represents the response for salary report",
+      "type": "object",
+      "properties": {
+        "roleCategories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RoleCategory"
+          },
+          "x-go-name": "RoleCategories"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "SalaryRequest": {
+      "type": "object",
+      "title": "SalaryRequest represents request for salary.",
+      "properties": {
+        "endDate": {
+          "type": "string",
+          "x-go-name": "EndDate"
+        },
+        "startDate": {
+          "type": "string",
+          "x-go-name": "StartDate"
+        },
+        "userID": {
+          "type": "string",
+          "x-go-name": "UserID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "SalaryResult": {
+      "description": "SalaryResult represents salary info",
+      "type": "object",
+      "properties": {
+        "Amounts": {},
+        "Date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "Rate": {
+          "$ref": "#/definitions/Total"
+        },
+        "TimeClockID": {
+          "type": "string"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "ScheduledClosure": {
+      "description": "ScheduledClosure represents scheduled closure model",
+      "type": "object",
+      "properties": {
+        "period": {
+          "$ref": "#/definitions/Period"
+        },
+        "reason": {
+          "type": "string",
+          "x-go-name": "Reason"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "ServiceCharge": {
+      "description": "ServiceCharge represents service charge model",
+      "type": "object",
+      "properties": {
+        "forPartiesEqualOrLargerThan": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ForPartiesEqualOrLargerThan"
+        },
+        "percentage": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Percentage"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "ServiceRange": {
+      "description": "ServiceRange represents service range model",
+      "type": "object",
+      "properties": {
+        "area": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "float"
+          },
+          "x-go-name": "Area"
+        },
+        "radius": {
+          "type": "number",
+          "format": "float",
+          "x-go-name": "Radius"
+        },
+        "type": {
+          "$ref": "#/definitions/RangeType"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "State": {
+      "description": "State represents paidHours synchronization state for single venue on a particular date",
+      "type": "object",
+      "properties": {
+        "Date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ID": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "Synced": {
+          "type": "boolean"
+        },
+        "Type": {
+          "$ref": "#/definitions/StateType"
+        },
+        "UpdatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "UserID": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "VenueID": {
+          "$ref": "#/definitions/ObjectID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "StateDTO": {
+      "description": "StateDTO represents DTO of paidHours synchronization state for single venue on a particular date",
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "Date"
+        },
+        "id": {
+          "type": "string",
+          "x-go-name": "ID"
+        },
+        "synced": {
+          "type": "boolean",
+          "x-go-name": "Synced"
+        },
+        "type": {
+          "$ref": "#/definitions/StateType"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "UpdatedAt"
+        },
+        "userId": {
+          "type": "string",
+          "x-go-name": "UserID"
+        },
+        "venueId": {
+          "type": "string",
+          "x-go-name": "VenueID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "StateType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "SubscriberType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "TimeSheet": {
+      "type": "object",
+      "title": "TimeSheet represents user activity in the timeline.",
+      "properties": {
+        "breakHours": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "BreakHours"
+        },
+        "date": {
+          "type": "string",
+          "x-go-name": "Date"
+        },
+        "mealBreakHours": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "MealBreakHours"
+        },
+        "overtimeHours": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "OvertimeHours"
+        },
+        "regularHours": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "RegularHours"
+        },
+        "restBreakHours": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "RestBreakHours"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "TipsByDatesResponse": {
+      "description": "TipsByDatesResponse represents a response for GET /tips with a range of dates",
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "x-go-name": "Date"
+        },
+        "tipsReport": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TipsReport"
+          },
+          "x-go-name": "TipsReport"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "TipsInfo": {
+      "description": "TipsInfo represents the info of the tips",
+      "type": "object",
+      "properties": {
+        "byMethod": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Method"
+          },
+          "x-go-name": "Methods"
+        },
+        "currency": {
+          "type": "string",
+          "x-go-name": "Currency"
+        },
+        "total": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Total"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "TipsReport": {
+      "description": "TipsReport represents the info of the tips for specific user",
+      "type": "object",
+      "properties": {
+        "tipsInfo": {
+          "$ref": "#/definitions/TipsInfo"
+        },
+        "userId": {
+          "type": "string",
+          "x-go-name": "UserID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "TipsType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "Total": {
+      "type": "object",
+      "title": "Total represents total struct.",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Amount"
+        },
+        "currency": {
+          "type": "string",
+          "x-go-name": "Currency"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "TotalUserInfo": {
+      "description": "TotalUserInfo represents transitional struct for user info",
+      "type": "object",
+      "properties": {
+        "PaidHours": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PaidHoursDTO"
+          }
+        },
+        "Timesheet": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TimeSheet"
+          }
+        },
+        "Tips": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TipsByDatesResponse"
+          }
+        },
+        "UserInfo": {
+          "$ref": "#/definitions/UserProfile"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "UpURLData": {
+      "description": "UpURLData contains information about all external base urls for each microservices that should be accessible from this microservice",
+      "type": "object",
+      "properties": {
+        "SettingsURL": {
+          "type": "string"
+        },
+        "TimeClockURL": {
+          "type": "string"
+        },
+        "TipsURL": {
+          "type": "string"
+        },
+        "UserProfileURL": {
+          "type": "string"
+        },
+        "VenueKey": {
+          "type": "string"
+        },
+        "VenueURL": {
+          "type": "string"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "UserInfo": {
+      "description": "UserInfo represents user info in the salary response",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "x-go-name": "Email"
+        },
+        "fullName": {
+          "type": "string",
+          "x-go-name": "FulName"
+        },
+        "phone": {
+          "$ref": "#/definitions/Phone"
+        },
+        "picture": {
+          "$ref": "#/definitions/Image"
+        },
+        "role": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RoleInfo"
+          },
+          "x-go-name": "Role"
+        },
+        "userId": {
+          "type": "string",
+          "x-go-name": "UserID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "UserProfile": {
+      "description": "UserProfile represents the piece of response of getting user profile",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "x-go-name": "Email"
+        },
+        "firstName": {
+          "type": "string",
+          "x-go-name": "FirstName"
+        },
+        "id": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "lastName": {
+          "type": "string",
+          "x-go-name": "LastName"
+        },
+        "phones": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Phone"
+          },
+          "x-go-name": "Phones"
+        },
+        "picture": {
+          "$ref": "#/definitions/Image"
+        },
+        "venues": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Venue"
+          },
+          "x-go-name": "Venues"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    },
+    "Venue": {
+      "description": "Venue represents venue model",
+      "type": "object",
+      "properties": {
+        "_version": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Version"
+        },
+        "address": {
+          "$ref": "#/definitions/Address"
+        },
+        "amenities": {
+          "$ref": "#/definitions/Amenities"
+        },
+        "availability": {
+          "$ref": "#/definitions/VenueAvailability"
+        },
+        "availableSalesOptions": {
+          "description": "Services",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AvailableSalesOption"
+          },
+          "x-go-name": "AvailableSalesOptions"
+        },
+        "bankingInformation": {
+          "$ref": "#/definitions/BankingInformation"
+        },
+        "brand": {
+          "$ref": "#/definitions/Brand"
+        },
+        "cateringServices": {
+          "$ref": "#/definitions/CateringServices"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreatedAt"
+        },
+        "createdBy": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "DeletedAt"
+        },
+        "deletedBy": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "deliveryServices": {
+          "$ref": "#/definitions/DeliveryServices"
+        },
+        "dineInServices": {
+          "$ref": "#/definitions/DineInServices"
+        },
+        "id": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "images": {
+          "description": "Property Photos",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GalleryImage"
+          },
+          "x-go-name": "Images"
+        },
+        "notifications": {
+          "description": "Notifications",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VenueNotification"
+          },
+          "x-go-name": "Notifications"
+        },
+        "operatingEntity": {
+          "$ref": "#/definitions/OperatingEntity"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        },
+        "tags": {
+          "description": "Property Description",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VenueTag"
+          },
+          "x-go-name": "Tags"
+        },
+        "tenantId": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "tenantKey": {
+          "type": "string",
+          "x-go-name": "TenantKey"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "UpdatedAt"
+        },
+        "updatedBy": {
+          "$ref": "#/definitions/ObjectID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "VenueAvailability": {
+      "description": "VenueAvailability represents venue availability model",
+      "type": "object",
+      "properties": {
+        "annualClosures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AnnualClosures"
+          },
+          "x-go-name": "AnnualClosures"
+        },
+        "openingHours": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OpeningHours"
+          },
+          "x-go-name": "OpeningHours"
+        },
+        "scheduledClosures": {
+          "$ref": "#/definitions/ScheduledClosure"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "VenueAvailabilityDTO": {
+      "description": "VenueAvailabilityDTO represents DTO of venue availability model",
+      "type": "object",
+      "properties": {
+        "annualClosures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AnnualClosuresDTO"
+          },
+          "x-go-name": "AnnualClosures"
+        },
+        "openingHours": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OpeningHours"
+          },
+          "x-go-name": "OpeningHours"
+        },
+        "scheduledClosures": {
+          "$ref": "#/definitions/ScheduledClosure"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "VenueDTO": {
+      "description": "VenueDTO represents DTO of venue model",
+      "type": "object",
+      "properties": {
+        "_version": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Version"
+        },
+        "address": {
+          "$ref": "#/definitions/Address"
+        },
+        "amenities": {
+          "$ref": "#/definitions/AmenitiesDTO"
+        },
+        "availability": {
+          "$ref": "#/definitions/VenueAvailabilityDTO"
+        },
+        "availableSalesOptions": {
+          "description": "Services",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AvailableSalesOption"
+          },
+          "x-go-name": "AvailableSalesOptions"
+        },
+        "bankingInformation": {
+          "$ref": "#/definitions/BankingInformation"
+        },
+        "brand": {
+          "$ref": "#/definitions/BrandDTO"
+        },
+        "cateringServices": {
+          "$ref": "#/definitions/CateringServices"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreatedAt"
+        },
+        "createdBy": {
+          "type": "string",
+          "x-go-name": "CreatedBy"
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "DeletedAt"
+        },
+        "deletedBy": {
+          "type": "string",
+          "x-go-name": "DeletedBy"
+        },
+        "deliveryServices": {
+          "$ref": "#/definitions/DeliveryServices"
+        },
+        "dineInServices": {
+          "$ref": "#/definitions/DineInServices"
+        },
+        "id": {
+          "type": "string",
+          "x-go-name": "ID"
+        },
+        "images": {
+          "description": "Property Photos",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GalleryImageDTO"
+          },
+          "x-go-name": "Images"
+        },
+        "notifications": {
+          "description": "Notifications",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VenueNotification"
+          },
+          "x-go-name": "Notifications"
+        },
+        "operatingEntity": {
+          "$ref": "#/definitions/OperatingEntityDTO"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        },
+        "tags": {
+          "description": "Property Description",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VenueTag"
+          },
+          "x-go-name": "Tags"
+        },
+        "tenantId": {
+          "type": "string",
+          "x-go-name": "TenantID"
+        },
+        "tenantKey": {
+          "type": "string",
+          "x-go-name": "TenantKey"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "UpdatedAt"
+        },
+        "updatedBy": {
+          "type": "string",
+          "x-go-name": "UpdatedBy"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "VenueNotification": {
+      "description": "VenueNotification represents venue notification struct",
+      "type": "object",
+      "properties": {
+        "resources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ResourceType"
+          },
+          "x-go-name": "Resources"
+        },
+        "type": {
+          "$ref": "#/definitions/SubscriberType"
+        },
+        "value": {
+          "type": "string",
+          "x-go-name": "Value"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "VenueParking": {
+      "description": "VenueParking represents venue parking model",
+      "type": "object",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/Address"
+        },
+        "type": {
+          "$ref": "#/definitions/VenueParkingType"
+        },
+        "useVenueAddress": {
+          "type": "boolean",
+          "x-go-name": "UseVenueAddress"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "VenueParkingDTO": {
+      "description": "VenueParkingDTO represents DTO of venue parking model",
+      "type": "object",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/Address"
+        },
+        "type": {
+          "$ref": "#/definitions/VenueParkingType"
+        },
+        "useVenueAddress": {
+          "type": "boolean",
+          "x-go-name": "UseVenueAddress"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "VenueParkingType": {
+      "description": "Possible values are: \"paid_self\", \"free_self\", \"paid_valet\", \"free_valet\"",
+      "type": "string",
+      "title": "VenueParkingType represents venue parking type",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "VenueResponse": {
+      "description": "VenueResponse represents venue response",
+      "type": "object",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/Address"
+        },
+        "description": {
+          "type": "string",
+          "x-go-name": "Description"
+        },
+        "id": {
+          "type": "string",
+          "x-go-name": "ID"
+        },
+        "key": {
+          "type": "string",
+          "x-go-name": "TenantKey"
+        },
+        "logo": {
+          "$ref": "#/definitions/ImageDTO"
+        },
+        "media": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Media"
+          },
+          "x-go-name": "Media"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "tenantId": {
+          "type": "string",
+          "x-go-name": "TenantID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "VenueTag": {
+      "description": "VenueTag represents venue tag model",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "type": {
+          "$ref": "#/definitions/VenueTagType"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "VenueTagType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
+    },
+    "WeeklyReport": {
+      "description": "WeeklyReport represents weekly hours and salary report for user",
+      "type": "object",
+      "properties": {
+        "DailyOvertime": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "DailyReports": {},
+        "WeeklyOvertime": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "WorkedHours": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/model"
+    }
+  }
+}
