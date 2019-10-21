@@ -1111,7 +1111,6 @@
       "x-go-package": "github.com/rockspoon/rs.hr.wages-calculator-ms/vendor/github.com/rockspoon/rs.cor.venue-model/v4/model"
     },
     "PhoneDTO": {
-      "description": "PhoneDTO represents phone entity",
       "$ref": "#/definitions/Phone"
     },
     "PhoneType": {
