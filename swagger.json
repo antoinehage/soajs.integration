@@ -218,6 +218,7 @@
           "200": {
             "description": "updateBulkTC response",
             "schema": {
+              "type": "array",
               "items": {
                 "$ref": "#/definitions/TCResponse"
               }
@@ -262,6 +263,7 @@
           "200": {
             "description": "getSummaryFromDateRange response",
             "schema": {
+              "type": "array",
               "items": {
                 "$ref": "#/definitions/SummaryResponse"
               }
