@@ -1,0 +1,1464 @@
+openapi: 3.0.1
+info:
+  title: Rockspoon Payment Register Microservice
+  description: |+
+    The purpose of this microservice is to keep the record of payments, refunds and fees collected
+
+    Errors:
+    badRequest                           4251001
+    requiredParameter                    4251002
+    venueNotAllowedCreatePayment         4251003
+    venueNotAllowedAccessPayment         4251004
+    venueNotAllowedAccessProspect        4251005
+    venueNotAllowedCreateRefund          4251006
+    couldNotFindObject                   4251007
+    invalidMiddlewareContext             4251008
+    noFeeforVenue                        4251009
+    invalidRefundAmount                  4251010
+    invalidPaymentStatusForRefund        4251011
+    paymentCreation                      4251012
+    paymentUpdate                        4251013
+    paymentToDatabaseModel               4251014
+    prospectCreation                     4251015
+    invalidHex                           4251016
+    prospectUpdate                       4251017
+    refundToDatabaseModel                4251018
+    refundCreation                       4251019
+    listPayment                          4251020
+    listRefunds                          4251021
+    microserviceIntegration              4251022
+    securityDepositCreation              4251023
+    securityDepositUpdate                4251024
+    securityDepositDelete                4251025
+    securityDepositToDatabaseModel       4251026
+    venueNotAllowedCreateSecurityDeposit 4251027
+    venueNotAllowedAccessSecurityDeposit 4251028
+    invalidNumber                        4251029
+    invalidServiceCredentials            4251030
+    listSecurityDeposits                 4251031
+
+
+  version: 0.0.1
+servers:
+- url: http://localhost:6007/
+- url: https://localhost:6007/
+paths:
+  /payment:
+    get:
+      tags:
+      - Payment
+      description: This endpoint returns all of the venue's payments for a given date
+        pair or list of order IDs. | At least one of the filters (fromDate and toDate
+        or order IDs) is required.
+      operationId: listPayments
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      - name: fromDate
+        in: query
+        description: starting date to filter payments
+        schema:
+          type: string
+          format: YYYY-MM-DD
+      - name: toDate
+        in: query
+        description: end date to filter payments
+        schema:
+          type: string
+          format: YYYY-MM-DD
+      - name: orderId
+        in: query
+        description: List of order IDs to filter payments for
+        schema:
+          type: string
+      responses:
+        200:
+          description: success response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PaymentResponse'
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - Payment
+      description: Creates a new payment record
+      operationId: createPayment
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue and device key
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRequest'
+        required: false
+      responses:
+        201:
+          description: The complete saved payment information with the new ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: Payment
+  /payment/{id}:
+    get:
+      tags:
+      - Payment
+      description: This endpoint returns a payment record by it's ID
+      operationId: getPaymentByID
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: payment's id
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: getPaymentByID response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /payment/{id}/prospect:
+    get:
+      tags:
+      - Prospect
+      description: this endpoint returns a Prospect record
+      operationId: getPaymentProspect
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: payment's id
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Prospect get response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProspectResponse'
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Prospect not found
+          content: {}
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /payment/{id}/refund:
+    post:
+      tags:
+      - Payment
+      description: creates a new payment refund record
+      operationId: refundPayment
+      parameters:
+      - name: id
+        in: path
+        description: The payment's id to refund
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Refund'
+        required: false
+      responses:
+        201:
+          description: The complete saved payment information with the new ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refund'
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: Refund
+  /payment/prospect:
+    get:
+      tags:
+      - Prospect
+      description: this endpoint returns a Prospect record
+      operationId: getProspect
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      - name: cardHolderName
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: redactedCardNumber
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Prospect get response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProspectResponse'
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - Prospect
+      description: This endpoint creates a prospect record
+      operationId: createProspect
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProspectRequest'
+        required: true
+      responses:
+        201:
+          description: Prospect creation response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProspectResponse'
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: ProspectRequest
+  /payment/prospect/{prospectId}:
+    put:
+      tags:
+      - Prospect
+      description: this endpoint returns the updated Prospect record
+      operationId: updateProspect
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      - name: prospectId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProspectUpdateRequest'
+        required: true
+      responses:
+        204:
+          description: No Content
+          content: {}
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: ProspectRequest
+  /payment/refund/daily:
+    get:
+      tags:
+      - Refund
+      description: this endpoint returns all of the venue's refunds for a day
+      operationId: listDailyRefunds
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      - name: period
+        in: query
+        description: 'day to filter refunds: YYYY-MM-DD'
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: success response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Refund'
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /payment/security-deposit/:
+    get:
+      tags:
+      - SecurityDeposit
+      description: |-
+        List security deposits based either they are expired or used. Security deposits in error (missing payment, for example) are omitted.
+        Also, always filter by venueID.
+      operationId: listSecurityDeposits
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      - name: expired
+        in: query
+        description: filter if expired
+        schema:
+          type: boolean
+      - name: used
+        in: query
+        description: filter if used
+        schema:
+          type: boolean
+      responses:
+        200:
+          description: listSecurityDeposits response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SecurityDepositResponse'
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - SecurityDeposit
+      description: |-
+        Endpoint for security deposit creation.
+        A security deposit is a sum of money held in trust as an initial part-payment in a purchasing process.
+        It represents a prepayment done by the customer for an event that will occur in a certain date in the future.
+      operationId: createSecurityDeposit
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: creation details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecurityDepositRequest'
+        required: true
+      responses:
+        201:
+          description: createSecurityDeposit response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecurityDepositID'
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: data
+  /payment/security-deposit/{id}:
+    get:
+      tags:
+      - SecurityDeposit
+      description: this endpoint returns a security deposit by its id
+      operationId: getSecurityDeposit
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: security deposit's id
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: success response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecurityDepositResponse'
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+      - SecurityDeposit
+      description: |-
+        This endpoint updates a security deposit by id.
+        Security Deposits amounts CANNOT be edited.
+        Event date CANNOT be in the past.
+      operationId: updateSecurityDeposit
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Security Deposit's id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecurityDepositRequest'
+        required: true
+      responses:
+        204:
+          description: updateSecurityDeposit response
+          content: {}
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: deposit
+    delete:
+      tags:
+      - SecurityDeposit
+      description: |-
+        this endpoint is used to delete an UNUSED security deposit
+        When a Security Deposit paid with a CREDIT CARD is deleted, the refund is triggered with the full amount for the card
+      operationId: deleteSecurityDeposit
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Security Deposit's id
+        required: true
+        schema:
+          type: string
+      responses:
+        204:
+          description: No content
+          content: {}
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /payment/security-deposit/{id}/consume:
+    post:
+      tags:
+      - SecurityDeposit
+      description: this endpoint is to update value consumed of a security deposit
+      operationId: updateConsumeSecurityDeposit
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: security desposit id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsumeRequest'
+        required: true
+      responses:
+        204:
+          description: No content
+          content: {}
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: ConsumeRequest
+  /payment/security-deposit/{id}/apply:
+    put:
+      tags:
+      - SecurityDeposit
+      description: this endpoint is to update the order id of payment for a security
+        deposit
+      operationId: applySecurityDeposit
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: security desposit id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplyRequest'
+        required: true
+      responses:
+        204:
+          description: No content
+          content: {}
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: ApplyRequest
+  /payment/security-deposit/{id}/remove:
+    post:
+      tags:
+      - SecurityDeposit
+      description: this endpoint is to remove the order id of payment for a security
+        deposit
+      operationId: removeSecurityDeposit
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: security desposit id
+        required: true
+        schema:
+          type: string
+      responses:
+        204:
+          description: No content
+          content: {}
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /payment/refund/monthly:
+    get:
+      tags:
+      - Refund
+      description: this endpoint returns all of the venue's refunds for a month
+      operationId: getMonthlyRefunds
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      - name: period
+        in: query
+        description: 'month to filter refunds: YYYY-MM'
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: success response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Refund'
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /payment/transaction:
+    get:
+      tags:
+      - Transaction Report
+      description: this endpoint returns the transaction report por a given period
+      operationId: dailyTransactionReport
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      - name: begin
+        in: query
+        description: start day filter
+        required: true
+        schema:
+          type: string
+          format: YYYY-MM-DD
+      - name: end
+        in: query
+        description: end day filter
+        required: true
+        schema:
+          type: string
+          format: YYYY-MM-DD
+      responses:
+        200:
+          description: success response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TransactionEntry'
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /payment/transaction/summary:
+    get:
+      tags:
+      - Transaction Report
+      description: this endpoint returns the transaction report por a given period
+      operationId: dailyTransactionSummary
+      parameters:
+      - name: access_token
+        in: header
+        description: user access token
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: header
+        description: venue key
+        required: true
+        schema:
+          type: string
+      - name: begin
+        in: query
+        description: stsrt day filter
+        required: true
+        schema:
+          type: string
+          format: YYYY-MM-DD
+      - name: end
+        in: query
+        description: end day filter
+        required: true
+        schema:
+          type: string
+          format: YYYY-MM-DD
+      - name: groupBy
+        in: query
+        description: groupBy can be `day`, `week` or `month`
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: success response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TransactionSummary'
+        400:
+          description: Required parameters were not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A problem when processing the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    ConsumeRequest:
+      required:
+      - amount
+      - orderId
+      type: object
+      properties:
+        amount:
+          type: integer
+          description: 'Value consumed, base on the bill total. ex: $1.00 will be
+            100.'
+          format: int64
+          example: 100
+        orderId:
+          type: string
+          description: ID of the order
+          example: 5ddd60a7c313b71c6b666527
+      description: ConsumeRequest is made to update Amount of a Security Deposit
+    ApplyRequest:
+      required:
+      - orderId
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: ID of the order
+          example: 5ddd60a7c313b71c6b666527
+      description: ApplyRequest is made to update OrderID of a Security Deposit
+    CardNotPresent:
+      type: object
+      properties:
+        cardBrand:
+          type: string
+        cardType:
+          type: string
+        encryptedCreditCard:
+          type: string
+        redactedCardNumber:
+          type: string
+      description: CardNotPresent card not present payment data
+    CardPresent:
+      type: object
+      properties:
+        cardBrand:
+          type: string
+        cardType:
+          type: string
+        redactedCardNumber:
+          type: string
+        signature:
+          type: string
+        transactionDetails:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+        transactionId:
+          type: string
+      description: CardPresent card present payment data
+    ConsumerApp:
+      type: object
+      properties:
+        cardId:
+          type: string
+        userId:
+          type: string
+      description: ConsumerApp consumer app payment data
+    Error:
+      type: object
+      properties:
+        result:
+          type: boolean
+        code:
+          type: number
+        message:
+          type: string
+      description: An error in a request
+    PaymentMethod:
+      type: string
+      description: |
+        Payment Method:
+          * `card_present`: Payment in credit card through a card reader
+          * `cash` : Payment in cash
+          * `card_non_present` : Payment in credit card through tokenization
+          * `external` : Payment throught third service
+          * `loyalty` : Payment in loyalty point
+      enum:
+      - card_present
+      - cash
+      - card_non_present
+      - external
+      - loyalty
+    ServiceType:
+      type: string
+      description: |
+        Service Type:
+          * `dinein`: Payment is made for a Dine In Order
+          * `delivery`: Payment is made for a Delivery Order
+          * `takeout`: Payment is made for a Takeout Order
+      enum:
+      - dinein
+      - delivery
+      - takeout
+    PaymentStatus:
+      type: string
+      description: |
+        Payment Status:
+          * `authorized` : Get an authorization to make a payment
+          * `captured` : Payment have been processed
+          * `partial_refunded`: Part of the payment have been refunded
+          * `refunded` : Full payment have been refunded
+          * `voided` : Cancelled after authorization
+      enum:
+      - authorized
+      - captured
+      - partial_refunded
+      - refunded
+      - voided
+    PaymentRequest:
+      required:
+      - amount
+      - isCashTips
+      - paymentMethod
+      - serviceCharge
+      - tip
+      type: object
+      properties:
+        isCashTips:
+          type: boolean
+          example: false
+        orderId:
+          type: string
+          example: 5dd7e7895150b85f8f03285a
+        checkId:
+          type: string
+          example: 5dd7e7895150b85f8f03285a
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethod'
+        serviceType:
+          $ref: '#/components/schemas/ServiceType'
+        amount:
+          $ref: '#/components/schemas/Money'
+        tip:
+          $ref: '#/components/schemas/Money'
+        serviceCharge:
+          $ref: '#/components/schemas/Money'
+        cardNotPresent:
+          $ref: '#/components/schemas/CardNotPresent'
+        cardPresent:
+          $ref: '#/components/schemas/CardPresent'
+        consumerApp:
+          $ref: '#/components/schemas/ConsumerApp'
+      description: Payment creation DTO
+    PaymentResponse:
+      description: Payment response DTO
+      allOf:
+      - $ref: '#/components/schemas/PaymentRequest'
+    ProspectRequest:
+      required:
+      - cardHolderName
+      - emails
+      - phones
+      - redactedCardNumber
+      type: object
+      properties:
+        cardHolderName:
+          type: string
+          description: Name of the credit card holder
+          example: Bruce Wayne
+        emails:
+          type: array
+          description: List of emails link to this credit card holder, can be empty
+          items:
+            type: string
+            example: bruce.wayne@rockspoon.com
+        phones:
+          type: array
+          description: List of phone number link to this credit card holder, can be
+            empty
+          items:
+            type: string
+            example: +15417543010
+        redactedCardNumber:
+          type: string
+          description: The first 4 and last 4 digits of the credit card
+          example: 1111 xxxx xxxx 2222
+      description: ProspectRequest represents the prospect creation request
+    ProspectResponse:
+      required:
+      - cardHolderName
+      - emails
+      - id
+      - phones
+      - redactedCardNumber
+      type: object
+      properties:
+        id:
+          type: string
+          example: 5dd7e7895150b85f8f03285a
+        cardHolderName:
+          type: string
+          description: Name of the credit card holder
+          example: Bruce Wayne
+        emails:
+          type: array
+          description: List of emails link to this credit card holder, can be empty
+          items:
+            type: string
+            example: bruce.wayne@rockspoon.com
+        phones:
+          type: array
+          description: List of phone number link to this credit card holder, can be
+            empty
+          items:
+            type: string
+            example: +15417543010
+        redactedCardNumber:
+          type: string
+          description: The first 4 and last 4 digits of the credit card
+          example: 1111 xxxx xxxx 2222
+      description: ProspectResponse represents the prospect object response
+    ProspectUpdateRequest:
+      required:
+      - emails
+      - phones
+      type: object
+      properties:
+        emails:
+          type: array
+          description: List of emails link to this credit card holder, can be empty
+          items:
+            type: string
+            example: bruce.wayne@rockspoon.com
+        phones:
+          type: array
+          description: List of phone number link to this credit card holder, can be
+            empty
+          items:
+            type: string
+            example: +15417543010
+      description: ProspectUpdateRequest represents the prospect update request
+    Refund:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 5dd7e7895150b85f8f03285a
+        venueId:
+          type: string
+          example: 5dd7e7895150b85f8f03285a
+        paymentId:
+          type: string
+          example: 5dd7e7895150b85f8f03285a
+        amount:
+          $ref: '#/components/schemas/Money'
+        description:
+          type: string
+          description: Description of refund
+          example: Bruce Wayne's did a refund
+        date:
+          type: string
+          description: date of the event in timestamp
+          format: date-time
+      description: Refund refund entry dto
+    SecurityDepositID:
+      required:
+      - securityDepositId
+      type: object
+      properties:
+        securityDepositId:
+          type: string
+          example: 5dd7e7895150b85f8f03285a
+      description: SecurityDepositID security deposit created
+    SecurityDepositRequest:
+      required:
+      - customerName
+      - customerPhone
+      - eventDate
+      - invitees
+      - paymentId
+      type: object
+      properties:
+        customerPhone:
+          type: string
+          description: customer's phone number
+          example: +15417543010
+        customerName:
+          type: string
+          description: customer Name
+          example: Bruce Wayne
+        eventDate:
+          type: string
+          description: date of the event in timestamp
+          format: date-time
+        eventDescription:
+          type: string
+          description: Description of the event
+          example: Bruce Wayne's party
+        invitees:
+          type: integer
+          description: Number of poeple will participate of the eventr
+          example: 42
+        paymentId:
+          type: string
+          description: Payment ID of the security deposit
+          example: 5dd7e7895150b85f8f03285a
+      description: SecurityDepositRequest security deposit creation
+    SecurityDepositResponse:
+      required:
+      - consumed
+      - customerName
+      - customerPhone
+      - eventDate
+      - id
+      - invitees
+      - paymentId
+      type: object
+      properties:
+        id:
+          type: string
+          example: 5dd7e7895150b85f8f03285a
+        customerPhone:
+          type: string
+          description: customer's phone number
+          example: +15417543010
+        customerName:
+          type: string
+          description: customer Name
+          example: Bruce Wayne
+        eventDate:
+          type: string
+          description: date of the event in timestamp
+          format: date-time
+        eventDescription:
+          type: string
+          description: Description of the event
+          example: Bruce Wayne's party
+        invitees:
+          type: integer
+          description: Number of poeple will participate of the eventr
+          example: 42
+        paymentId:
+          type: string
+          description: Payment ID of the security deposit
+          example: 5dd7e7895150b85f8f03285a
+        consumed:
+          $ref: '#/components/schemas/Money'
+        amount:
+          $ref: '#/components/schemas/Money'
+      description: SecurityDeposit security deposit model
+    TransactionSummary:
+      type: object
+      properties:
+        _id:
+          type: string
+        payments:
+          type: integer
+          example: 11
+        refunds:
+          type: integer
+          example: 10
+        securityDeposits:
+          type: integer
+          example: 11
+        consumedSecurityDeposits:
+          type: integer
+          example: 11
+        expiredSecurityDeposits:
+          type: integer
+          example: 11
+        tips:
+          type: integer
+          example: 2000
+        serviceCharges:
+          type: integer
+          example: 11
+      description: TransactionSummary represents an aggregated transaction report.
+                     | The are amount in cents.
+    TransactionEntry:
+      type: object
+      properties:
+        checkNumber:
+          type: string
+          example: 5dd7e7895150b85f8f03285a
+        creditCardNumber:
+          type: string
+          description: The first 4 and last 4 digits of the credit card
+          example: 1111 xxxx xxxx 2222
+        date:
+          type: string
+          description: date of the event in timestamp
+          format: date-time
+        orderId:
+          type: string
+          description: The associated order ID.
+          example: 5dd7e7895150b85f8f03285a
+        employeeId:
+          type: string
+          description: The profile ID of the employee that created the transaction.
+          example: 5dd7e7895150b85f8f03285a
+        serviceType:
+          $ref: '#/components/schemas/ServiceType'
+        userPaymentId:
+          type: string
+          example: 5dd7e7895150b85f8f03285a
+        paymentTransactionId:
+          type: string
+          example: 5dd7e7895150b85f8f03285a
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethod'
+        paymentBaseAmount:
+          $ref: '#/components/schemas/Money'
+        paymentMandatoryGratuityAmount:
+          $ref: '#/components/schemas/Money'
+        paymentChangeAmount:
+          $ref: '#/components/schemas/Money'
+        paymentCreateTime:
+          type: string
+          description: date of the event in timestamp
+          format: date-time
+        paymentTipAmount:
+          $ref: '#/components/schemas/Money'
+        paymentVoided:
+          type: boolean
+          description: if payment have been voided
+        isCashTips:
+          type: boolean
+          description: if entry is a trip
+        isRefund:
+          type: boolean
+          description: if entry is a refundCreation
+      description: TransactionEntry represents a line in the transaction report
+    Money:
+      type: object
+      properties:
+        value:
+          type: integer
+          description: |
+            description: it represent the price without decimal
+          format: int64
+        currency:
+          $ref: '#/components/schemas/Currency'
+      description: Money is a value and curency.
+    Currency:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/CurrencyType'
+        symbol:
+          type: string
+          description: Symbol of the currency
+          example: $
+        decimal:
+          type: integer
+          description: |
+            description: Number of decimal to represent the cent of the currency.
+          format: int8
+      description: Currency is a currency of the Money.
+    CurrencyType:
+      type: string
+      description: |
+        Currency Type:
+          * `USD`: Currency use in USA
+      enum:
+      - USD
